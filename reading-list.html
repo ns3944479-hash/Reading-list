@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Reading List</title>
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --text: #172033;
+  --muted: #667085;
+  --border: #e4e7ec;
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --danger: #dc2626;
+  --shadow: 0 10px 30px rgba(16, 24, 40, 0.07);
+  --radius: 18px;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+.container {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-content {
+  padding: 48px 0 42px;
+}
+
+.eyebrow,
+.section-kicker {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.subtitle {
+  max-width: 650px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+main {
+  padding: 30px 0 50px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.stat-card,
+.add-section,
+.list-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.stat-card {
+  padding: 20px;
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.stat-card strong {
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+.add-section {
+  margin-bottom: 28px;
+  padding: 26px;
+}
+
+.section-heading {
+  margin-bottom: 20px;
+}
+
+.section-heading h2,
+.list-header h2 {
+  margin-bottom: 0;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+}
+
+.book-form {
+  display: grid;
+  grid-template-columns: 1fr 220px auto;
+  align-items: end;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group label,
+.filter-control span {
+  color: #344054;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder {
+  color: #98a2b3;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.add-button {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  background: var(--primary);
+  font-weight: 750;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.add-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.list-section {
+  padding: 26px;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.filter-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-control select {
+  min-width: 150px;
+  min-height: 40px;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.book-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+  padding: 20px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.book-card h3 {
+  margin: 0 0 18px;
+  padding-right: 32px;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.book-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.status-to-read {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-reading {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.status-done {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-select {
+  min-height: 34px;
+  width: auto;
+  max-width: 140px;
+  padding: 0 28px 0 9px;
+  font-size: 0.78rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.edit-button,
+.delete-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 750;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.edit-button {
+  color: var(--primary);
+  background: white;
+}
+
+.edit-button:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+.delete-button {
+  color: var(--danger);
+  background: white;
+}
+
+.delete-button:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.empty-state {
+  padding: 55px 20px;
+  text-align: center;
+  border: 1px dashed #cfd5df;
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.empty-icon {
+  margin-bottom: 12px;
+  font-size: 2.5rem;
+}
+
+.empty-state h3 {
+  margin-bottom: 5px;
+}
+
+.empty-state p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+footer {
+  padding: 0 16px 35px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 850px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .book-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .add-button {
+    grid-column: 1 / -1;
+  }
+
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: min(100% - 22px, 1100px);
+  }
+
+  .header-content {
+    padding: 35px 0 30px;
+  }
+
+  main {
+    padding-top: 20px;
+  }
+
+  .stats,
+  .book-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-section,
+  .list-section {
+    padding: 20px;
+  }
+
+  .book-form {
+    grid-template-columns: 1fr;
+  }
+
+  .add-button {
+    grid-column: auto;
+  }
+
+  .list-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filter-control {
+    justify-content: space-between;
+  }
+
+  .filter-control select {
+    flex: 1;
+  }
+}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <div>
+        <p class="eyebrow">COLLEGE READING TRACKER</p>
+        <h1>My Reading List</h1>
+        <p class="subtitle">Keep track of the books you want to read, are reading, and have finished.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats" aria-label="Reading status counts">
+      <div class="stat-card">
+        <span class="stat-label">To Read</span>
+        <strong id="to-read-count">0</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Reading</span>
+        <strong id="reading-count">0</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Done</span>
+        <strong id="done-count">0</strong>
+      </div>
+      <div class="stat-card total-card">
+        <span class="stat-label">Total Books</span>
+        <strong id="total-count">0</strong>
+      </div>
+    </section>
+
+    <section class="add-section">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">ADD A BOOK</p>
+          <h2>What do you want to read?</h2>
+        </div>
+      </div>
+
+      <form id="book-form" class="book-form">
+        <div class="form-group">
+          <label for="book-title">Book title</label>
+          <input type="text" id="book-title" name="title" placeholder="e.g. Atomic Habits" maxlength="100" required>
+        </div>
+
+        <div class="form-group">
+          <label for="book-status">Status</label>
+          <select id="book-status" name="status">
+            <option value="To Read">To Read</option>
+            <option value="Reading">Reading</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+
+        <button type="submit" class="add-button">+ Add Book</button>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <div class="list-header">
+        <div>
+          <p class="section-kicker">YOUR BOOKS</p>
+          <h2>Reading list</h2>
+        </div>
+
+        <label class="filter-control" for="filter-status">
+          <span>Filter</span>
+          <select id="filter-status">
+            <option value="All">All books</option>
+            <option value="To Read">To Read</option>
+            <option value="Reading">Reading</option>
+            <option value="Done">Done</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon" aria-hidden="true">📚</div>
+        <h3>No books yet.</h3>
+        <p>Add your first book using the form above.</p>
+      </div>
+
+      <div id="book-list" class="book-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Reading List · Your books are saved in this browser.</p>
+  </footer>
+
+  <script>
+const STORAGE_KEY = "college-reading-list";
+
+const form = document.getElementById("book-form");
+const titleInput = document.getElementById("book-title");
+const statusInput = document.getElementById("book-status");
+const filterInput = document.getElementById("filter-status");
+const bookList = document.getElementById("book-list");
+const emptyState = document.getElementById("empty-state");
+
+const countElements = {
+  "To Read": document.getElementById("to-read-count"),
+  "Reading": document.getElementById("reading-count"),
+  "Done": document.getElementById("done-count"),
+  total: document.getElementById("total-count")
+};
+
+let books = loadBooks();
+
+function loadBooks() {
+  try {
+    const savedBooks = localStorage.getItem(STORAGE_KEY);
+    return savedBooks ? JSON.parse(savedBooks) : [];
+  } catch (error) {
+    console.error("Could not load books:", error);
+    return [];
+  }
+}
+
+function saveBooks() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+}
+
+function createBook(title, status) {
+  return {
+    id: Date.now().toString(),
+    title: title.trim(),
+    status
+  };
+}
+
+function getStatusClass(status) {
+  if (status === "To Read") return "status-to-read";
+  if (status === "Reading") return "status-reading";
+  return "status-done";
+}
+
+function updateCounts() {
+  countElements["To Read"].textContent =
+    books.filter(book => book.status === "To Read").length;
+
+  countElements["Reading"].textContent =
+    books.filter(book => book.status === "Reading").length;
+
+  countElements["Done"].textContent =
+    books.filter(book => book.status === "Done").length;
+
+  countElements.total.textContent = books.length;
+}
+
+function renderBooks() {
+  const filter = filterInput.value;
+
+  const visibleBooks = filter === "All"
+    ? books
+    : books.filter(book => book.status === filter);
+
+  bookList.innerHTML = "";
+
+  if (visibleBooks.length === 0) {
+    emptyState.hidden = false;
+
+    if (books.length > 0 && filter !== "All") {
+      emptyState.querySelector("h3").textContent = "No books in this category.";
+      emptyState.querySelector("p").textContent =
+        "Try another filter or add a new book.";
+    } else {
+      emptyState.querySelector("h3").textContent = "No books yet.";
+      emptyState.querySelector("p").textContent =
+        "Add your first book using the form above.";
+    }
+
+    updateCounts();
+    return;
+  }
+
+  emptyState.hidden = true;
+
+  visibleBooks.forEach(book => {
+    const card = document.createElement("article");
+    card.className = "book-card";
+
+    const title = document.createElement("h3");
+    title.textContent = book.title;
+
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+
+    const editButton = document.createElement("button");
+    editButton.className = "edit-button";
+    editButton.type = "button";
+    editButton.textContent = "Edit";
+    editButton.addEventListener("click", () => editBook(book.id));
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "delete-button";
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => deleteBook(book.id));
+
+    actions.appendChild(editButton);
+    actions.appendChild(deleteButton);
+
+    const meta = document.createElement("div");
+    meta.className = "book-meta";
+
+    const badge = document.createElement("span");
+    badge.className = `status-badge ${getStatusClass(book.status)}`;
+    badge.textContent = book.status;
+
+    const statusSelect = document.createElement("select");
+    statusSelect.className = "status-select";
+    statusSelect.setAttribute("aria-label", `Change status for ${book.title}`);
+
+    ["To Read", "Reading", "Done"].forEach(status => {
+      const option = document.createElement("option");
+      option.value = status;
+      option.textContent = status;
+      option.selected = status === book.status;
+      statusSelect.appendChild(option);
+    });
+
+    statusSelect.addEventListener("change", event => {
+      updateBookStatus(book.id, event.target.value);
+    });
+
+    meta.appendChild(badge);
+    meta.appendChild(statusSelect);
+
+    card.appendChild(title);
+    card.appendChild(actions);
+    card.appendChild(meta);
+
+    bookList.appendChild(card);
+  });
+
+  updateCounts();
+}
+
+function addBook(title, status) {
+  books.unshift(createBook(title, status));
+  saveBooks();
+  renderBooks();
+}
+
+function updateBookStatus(id, newStatus) {
+  books = books.map(book =>
+    book.id === id ? { ...book, status: newStatus } : book
+  );
+
+  saveBooks();
+  renderBooks();
+}
+
+function editBook(id) {
+  const book = books.find(book => book.id === id);
+  if (!book) return;
+
+  const newTitle = prompt("Edit book title:", book.title);
+  if (newTitle === null) return;
+
+  const trimmedTitle = newTitle.trim();
+  if (!trimmedTitle) {
+    alert("Book title cannot be empty.");
+    return;
+  }
+
+  const newStatus = prompt(
+    "Enter status: To Read, Reading, or Done",
+    book.status
+  );
+  if (newStatus === null) return;
+
+  const statusMap = {
+    "to read": "To Read",
+    "reading": "Reading",
+    "done": "Done"
+  };
+
+  const normalizedStatus = newStatus.trim().toLowerCase();
+  if (!statusMap[normalizedStatus]) {
+    alert("Invalid status. Use To Read, Reading, or Done.");
+    return;
+  }
+
+  book.title = trimmedTitle;
+  book.status = statusMap[normalizedStatus];
+  saveBooks();
+  renderBooks();
+}
+
+function deleteBook(id) {
+  const book = books.find(book => book.id === id);
+  if (!book) return;
+
+  if (!confirm(`Delete "${book.title}"?`)) return;
+
+  books = books.filter(book => book.id !== id);
+  saveBooks();
+  renderBooks();
+}
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+
+  const title = titleInput.value.trim();
+
+  if (!title) {
+    titleInput.focus();
+    return;
+  }
+
+  addBook(title, statusInput.value);
+
+  form.reset();
+  statusInput.value = "To Read";
+  titleInput.focus();
+});
+
+filterInput.addEventListener("change", renderBooks);
+
+renderBooks();
+  </script>
+</body>
+</html>
